@@ -20,6 +20,7 @@ process::process(string a) {
     _addr = a;
     Parsing();
     dfgCout();
+//    cout << "testBench已生成" << endl;
 }
 
 process::~process() {}
@@ -150,8 +151,6 @@ void process::Parsing() {
 void process::peparsing(XMLElement* PeXml, PEPROCESS* pe) {
     pe->_index  = std::stoi(PeXml->FindAttribute("index")->Value());
     pe->_config = pecfggen(PeXml, pe);
-    string s    = pe->_config;
-    cout << s << endl;
 }
 
 /**
