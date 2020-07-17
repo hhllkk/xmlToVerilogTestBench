@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Config manual_placement="true">
+
+  <node type="pe" index="0" opcode="add" loop_control="outermost_loop" branch_control="null">
+    <inner_connection
+        buffer0_mode="buffer" buffer1_mode="buffer" buffer2_mode="keep"
+        buffer0_from="null" buffer1_from="in0in1" buffer2_from="null"
+        input_buffer_bypass="inbuffer" output_buffer_bypass="bypass"/>
+    <input type="pe" index="1" port="0"/>
+    <input type="pe" index="2" port="0"/>
+    <input type="null"/>
+    <reg value="null" />
+    <reg value="null" />
+    <reg value="8" />
+    <placement cord="[5, 8]"/>
+  </node>
+
+  <node type="pe" index="1" opcode="mul" loop_control="null" branch_control="null" >
+    <inner_connection
+        buffer0_mode="buffer" buffer1_mode="keep" buffer2_mode="keep"
+        buffer0_from="in0" buffer1_from="null" buffer2_from="null"
+        input_buffer_bypass="bypass" output_buffer_bypass="bypass"/>
+    <input type="pe" index="0" port="0"/>
+    <input type="null"/>
+    <input type="null"/>
+    <reg value="null" />
+    <reg value="1" />
+    <reg value="12" />
+    <placement cord="[5, 8]"/>
+  </node>
+
+  <node type="pe" index="2" opcode="add" loop_control="null" branch_control="null" >
+    <inner_connection
+        buffer0_mode="keep" buffer1_mode="buffer" buffer2_mode="keep"
+        buffer0_from="null" buffer1_from="in1" buffer2_from="in2"
+        input_buffer_bypass="inbuffer" output_buffer_bypass="outbuffer"/>
+    <input type="null"/>
+    <input type="pe" index="0" port="0"/>
+    <input type="null"/>
+    <reg value="1" />
+    <reg value="null" />
+    <reg value="5" />
+    <placement cord="[5, 8]"/>
+  </node>
+</Config>
