@@ -1,7 +1,9 @@
 #pragma once
+
 #include "process.h"
 
 #include <fstream>
+#include <iostream>
 
 #include "enum_converter.h"
 #include "enum_define.h"
@@ -20,7 +22,6 @@ process::process(string a) {
     _addr = a;
     Parsing();
     dfgCout();
-//    cout << "testBench已生成" << endl;
 }
 
 process::~process() {}
@@ -40,7 +41,7 @@ void process::dfgCout() {
     ofs << "  reg rst;" << endl;
     ofs.close();
     /**
-     * pe端口定义
+     * pe端口声明
      */
     for (int i = 0; i < _peGroup.size(); ++i) {
         _peGroup[i].pePortCout();
@@ -64,11 +65,11 @@ void process::dfgCout() {
         _peGroup[i].peConfigCout();
     }
     ofs.open(OUTPUTADDR, ios::app);
-    ofs << "    #1 rst <= ~rst;" << endl;
     ofs << "    #2 rst <= ~rst;" << endl;
+    ofs << "    #1 rst <= ~rst;" << endl;
     ofs.close();
     /**
-     * TODO:写入pe的reg数据
+     *写入pe的reg数据
      */
     peRegInitial();
 
@@ -77,6 +78,7 @@ void process::dfgCout() {
     ofs << "  always #(CYCLE/2) clk=~clk;" << endl;
     ofs << "endmodule" << endl;
     ofs.close();
+    std::cout << "testbench has been done!" << std::endl;
 }
 
 /**
@@ -116,6 +118,15 @@ void process::Parsing() {
                 break;
             }
             case NodeType::ls: {
+                /**
+                 *只需要判断load或者l2p
+                 */
+                string lsmode = NodeXml->FindAttribute("ls_mode")->Value();
+                if (lsmode == "load" || lsmode == "l2p" || lsmode == "dummy") {
+                    PEPROCESS pe;
+                    tempLsProcess(NodeXml, &pe);
+                    _peGroup.push_back(pe);
+                }
                 break;
             }
             case NodeType::lv: {
@@ -125,6 +136,9 @@ void process::Parsing() {
                 break;
             }
             case NodeType::fifo: {
+                PEPROCESS pe;
+                tempFifoProcess(NodeXml, &pe);
+                _peGroup.push_back(pe);
                 break;
             }
             default:
@@ -226,6 +240,16 @@ string process::pecfggen(XMLElement* PeXml, PEPROCESS* pe) {
             pe->_inport[i] = std::stoi(input_xml->FindAttribute("index")->Value());
             _peBPTtc_i.push_back({pe->_index, pe->_inport[i], i});
         }
+        // NOTE:默认将ls_index加100，防止发生与pe的冲突
+        else if (input_type == NodeType::ls) {
+            pe->_inport[i] = std::stoi(input_xml->FindAttribute("index")->Value()) + 100;
+            _peBPTtc_i.push_back({pe->_index, pe->_inport[i], i});
+        }
+        // NOTE:默认将fifo_index加100，防止发生与pe的冲突
+        else if (input_type == NodeType::fifo) {
+            pe->_inport[i] = std::stoi(input_xml->FindAttribute("index")->Value()) + 200;
+            _peBPTtc_i.push_back({pe->_index, pe->_inport[i], i});
+        }
         input_xml = input_xml->NextSiblingElement("input");
     }
 
@@ -252,25 +276,111 @@ string process::pecfggen(XMLElement* PeXml, PEPROCESS* pe) {
     return pecfg;
 }
 
-void process::peRegInitial(){
+void process::peRegInitial() {
     ofstream ofs;
     ofs.open(OUTPUTADDR, ios::app);
 
     unordered_map<int, vector<int>>::iterator iter;
-    for (int i = 0; i < 3; ++i){
-             bool Timing=false;
-        for (auto iter = _regValue.begin(); iter != _regValue.end(); ++iter){
-              if(i<iter->second.size()){
-                if(Timing){
-                   ofs<<"        "; 
-                }else{
-                   ofs<<"    #"<<i*10+10<<" ";
+    for (int i = 0; i < 3; ++i) {
+        bool Timing = false;
+        for (auto iter = _regValue.begin(); iter != _regValue.end(); ++iter) {
+            if (i < iter->second.size()) {
+                if (Timing) {
+                    ofs << "        ";
+                } else {
+                    ofs << "    #" << i * 10 + 10 << " ";
                 }
-              ofs<<"PE"<<iter->first<<"_Configure_Inport <={1'b1,32'd"<<iter->second[i]<<"};"<<endl;
-              Timing=true;
-          }
+                ofs << "PE" << iter->first << "_Configure_Inport <={1'b1,32'd" << iter->second[i]
+                    << "};" << endl;
+                Timing = true;
+            }
         }
     }
 
     ofs.close();
+}
+
+/**
+ * @Author   hlk
+ * @DateTime 2020-07-19
+ * @version  方便处理LSE的load模式，为了保持DFG的完整，对于store模式，可以直接忽略；
+ *            对于load模式，将其转化为null模式的PE，为了保持之前代码的完整性，引入这个函数，
+ *            到时候可以直接删除.默认ls的index为ls_index+100
+ */
+void process::tempLsProcess(XMLElement* PeXml, PEPROCESS* pe) {
+    pe->_index  = std::stoi(PeXml->FindAttribute("index")->Value()) + 100;
+    pe->_config = lscfggen(PeXml, pe);
+}
+
+string process::lscfggen(XMLElement* PeXml, PEPROCESS* pe) {
+    // TODO:加入bus后需要更改inport0_valid的输出值，现在默认为1'b0;
+    string inport0_valid = "1'b1";
+    string reser         = "1'b1,7'b000_0000";
+
+    string alu = PEALUMAP["nop"];
+
+    /****************************************生成buf_mode****************************************/
+
+    string buffer0_mode = PEBUFMODE["buffer"];
+    string buffer1_mode = PEBUFMODE["buffer"];
+    string buffer2_mode = PEBUFMODE["buffer"];
+
+    string buf_mode = "3'b" + buffer0_mode + buffer1_mode + buffer2_mode;
+    //------------------------------------------------------------------------------------------//
+    //
+    /****************************************生成buf_from****************************************/
+
+    string buffer0_from = PEBUF02CFGMAP["null"];
+    string buffer1_from = PEBUF1CFGMAP["in1"];
+    string buffer2_from = PEBUF02CFGMAP["null"];
+
+    string buf_from = "4'b" + buffer0_from + buffer1_from + buffer2_from;
+    //-----------------------------------------------------------------------------------------//
+
+    /****************************************生成bypass*****************************************/
+
+    string inbuffer_bypass  = PEBUFBYPASS["inbuffer"];
+    string outbuffer_bypass = PEBUFBYPASS["outbuffer"];
+
+    string buf_bypass = "2'b" + inbuffer_bypass + outbuffer_bypass;
+    //------------------------------------------------------------------------------------------//
+
+    /****************************************生成pe内部连线配置*****************************************/
+    XMLElement* input_xml = PeXml->FirstChildElement("input");
+
+    for (int i = 0; (input_xml != nullptr && i < 3); ++i) {
+        NodeType input_type = NodeTypeConverter::toEnum(input_xml->FindAttribute("type")->Value());
+        if (input_type == NodeType::pe) {
+            pe->_inport[i] = std::stoi(input_xml->FindAttribute("index")->Value());
+            _peBPTtc_i.push_back({pe->_index, pe->_inport[i], i});
+        }
+        input_xml = input_xml->NextSiblingElement("input");
+    }
+
+    //------------------------------------------------------------------------------------------//
+
+
+    /****************************************生成outmode*****************************************/
+    // TODO:加入output_mode==bus时的配置，在xml中没找到对应的关键字配置，先默认为pe
+    string outmode = "1'd1";
+    //------------------------------------------------------------------------------------------//
+
+    /****************************************生成control*****************************************/
+    string loop_control = PECTRMAP["null"];
+    //------------------------------------------------------------------------------------------//
+
+    /****************************************生成branch_control***********************************/
+    string branch_control = BRANCHCONTROL["null"];
+    //------------------------------------------------------------------------------------------//
+
+    string comma = ",";
+    string pecfg = "{" + reser + comma + "3'b000" + comma + inport0_valid + comma + alu + comma +
+                   buf_mode + comma + buf_from + comma + buf_bypass + comma + outmode + comma +
+                   loop_control + comma + branch_control + "}";
+    return pecfg;
+}
+
+void process::tempFifoProcess(XMLElement* PeXml, PEPROCESS* pe){
+    pe->_index  = std::stoi(PeXml->FindAttribute("index")->Value()) + 200;
+    pe->_config = lscfggen(PeXml, pe);
 }

@@ -2,7 +2,7 @@
 #include <unordered_map>
 
 std::unordered_map<std::string, std::string> PEALUMAP = {
-    {"null", "5'd0"},     {"sadd", "5'd1"},
+    {"nop", "5'd0"},     {"sadd", "5'd1"},
     {"mul", "5'd2"},          {"add", "5'd3"},
     {"sub", "5'd4"},          {"less_than", "5'd5"},
     {"less_than", "5'd5"},    {"less_than_equal", "5'd6"},

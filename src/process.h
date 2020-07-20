@@ -40,6 +40,12 @@ class process {
     string pecfggen(XMLElement* PeXml, PEPROCESS* pe);
     void peRegInitial();
 
+    // ls,fifo等相关的临时处理函数
+   private:
+    void tempLsProcess(XMLElement* PeXml, PEPROCESS* pe);
+    string lscfggen(XMLElement* PeXml, PEPROCESS* pe);
+    void tempFifoProcess(XMLElement* PeXml, PEPROCESS* pe);
+
    private:
     void dfgCout();
 
