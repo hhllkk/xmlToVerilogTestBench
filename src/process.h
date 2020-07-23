@@ -39,6 +39,7 @@ class process {
     void peparsing(XMLElement* PeXml, PEPROCESS* pe);
     string pecfggen(XMLElement* PeXml, PEPROCESS* pe);
     void peRegInitial();
+    void peOutMostLoop();
 
     // ls,fifo等相关的临时处理函数
    private:
@@ -52,6 +53,7 @@ class process {
    private:
     string _addr;
 
+    void dataCout();
     void Parsing();
     bool _manual_placement;
     //保存所有pe信息
@@ -61,4 +63,5 @@ class process {
     unordered_map<int, vector<bpItc>> _peBPItc;
     //index + regvalue
     unordered_map<int, vector<int>> _regValue;
+    std::vector<int> _outLoopNum;
 };

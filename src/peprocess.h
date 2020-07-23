@@ -38,4 +38,5 @@ public:
     int _inport[3] = {-1,-1,-1};
     PEBPPORT _bpFrom[8] = { {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0} };
     int _fanOut;
+    bool _outloop=false;
 };

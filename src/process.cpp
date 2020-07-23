@@ -39,6 +39,9 @@ void process::dfgCout() {
     ofs << "  parameter CYCLE=10;" << endl;
     ofs << "  reg clk;" << endl;
     ofs << "  reg rst;" << endl;
+    ofs << "\n" << endl;
+    ofs << "  integer i;" << endl;
+    ofs << "  integer filez;" << endl;
     ofs.close();
     /**
      * pe端口声明
@@ -73,12 +76,67 @@ void process::dfgCout() {
      */
     peRegInitial();
 
+    peOutMostLoop();
+
     ofs.open(OUTPUTADDR, ios::app);
     ofs << "  end" << endl;
+    ofs.close();
+
+    //输出data到data_flow_rtl中。
+    dataCout();
+    
+    ofs.open(OUTPUTADDR, ios::app);
     ofs << "  always #(CYCLE/2) clk=~clk;" << endl;
     ofs << "endmodule" << endl;
     ofs.close();
     std::cout << "testbench has been done!" << std::endl;
+}
+
+void process::peOutMostLoop(){
+    if (_outLoopNum.size()==0)
+    {
+        return;
+    }
+    ofstream ofs;
+    ofs.open(OUTPUTADDR, ios::app);
+    for (int i = 0; i < _outLoopNum.size(); ++i)
+    {
+        ofs<<"    #10 PE"<<_outLoopNum[i]<<"_Inport1 <= {4'b1100,32'd0};"<<endl;
+    }
+    for (int i = 0; i < _outLoopNum.size(); ++i)
+    {
+        ofs<<"    #10 PE"<<_outLoopNum[i]<<"_Inport1 <= {4'b0000,32'd0};"<<endl;
+    }
+    ofs.close();
+}
+
+void process::dataCout(){
+    ofstream ofs;
+    ofs.open(OUTPUTADDR, ios::app);
+    ofs << "  initial begin" << endl;
+    ofs << "      filez=$fopen(\"./data_flow_rtl\",\"w\");" << endl;
+    ofs << "        for(i=0;i<100;i=i+1) begin" << endl;
+    ofs << "            @(posedge clk);" << endl;
+    ofs << "            #1" << endl;
+    for (int i = 0; i < _peGroup.size(); ++i)
+    {
+        ofs << "            if(PE"<<_peGroup[i]._index<<"_Outport0[35:33]!=3'b000&&PE"<<_peGroup[i]._index<<"_Outport0[32]!=1'b1) begin" << endl;
+        ofs << "                $fwrite(filez,\"PE"<<_peGroup[i]._index<<".vbl=%b,value=%d";
+        //判断inbuffer与outbuffer是不是全部bypass，53与54位是buffer_bypass的配置，如果全部bypass，则需要加注释
+        if (_peGroup[i]._config[53]=='1'&&_peGroup[i]._config[54]=='1')
+        {
+            ofs << "@clk %d is_all_comb\\n\",PE"<<_peGroup[i]._index<<"_Outport0[35:33],PE"<<_peGroup[i]._index<<"_Outport0[31:0],i);" << endl;
+        }else{
+            ofs << "@clk %d\\n\",PE"<<_peGroup[i]._index<<"_Outport0[35:33],PE"<<_peGroup[i]._index<<"_Outport0[31:0],i);" << endl;
+        }
+        ofs << "            end" << endl;        
+    }
+    ofs << "        end" << endl;
+    ofs << "        #1 $fclose(filez);" << endl;
+    ofs << "        $finish;" << endl;
+    ofs << "    end" << endl;
+    ofs << "\n" << endl;
+    ofs.close();
 }
 
 /**
@@ -264,7 +322,15 @@ string process::pecfggen(XMLElement* PeXml, PEPROCESS* pe) {
     //------------------------------------------------------------------------------------------//
 
     /****************************************生成control*****************************************/
-    string loop_control = PECTRMAP[PeXml->FindAttribute("loop_control")->Value()];
+    string str = PeXml->FindAttribute("loop_control")->Value();
+    if (str =="outermost_loop")
+    {
+        pe->_outloop=true;
+        _outLoopNum.push_back(pe->_index);
+    }else{
+        pe->_outloop=false;
+    }
+    string loop_control = PECTRMAP[str];
     //------------------------------------------------------------------------------------------//
 
     /****************************************生成branch_control***********************************/
@@ -319,7 +385,7 @@ void process::tempLsProcess(XMLElement* PeXml, PEPROCESS* pe) {
 }
 
 string process::lscfggen(XMLElement* PeXml, PEPROCESS* pe) {
-    // TODO:加入bus后需要更改inport0_valid的输出值，现在默认为1'b0;
+
     string inport0_valid = "1'b0";
     string reser         = "1'b1,7'b000_0000";
 
