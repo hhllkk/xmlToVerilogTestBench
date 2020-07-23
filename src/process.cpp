@@ -258,7 +258,7 @@ string process::pecfggen(XMLElement* PeXml, PEPROCESS* pe) {
 
     /****************************************生成outmode*****************************************/
     // TODO:加入output_mode==bus时的配置，在xml中没找到对应的关键字配置，先默认为pe
-    string outmode = "1'd1";
+    string outmode = "1'd0";
     //------------------------------------------------------------------------------------------//
 
     /****************************************生成control*****************************************/
@@ -288,7 +288,7 @@ void process::peRegInitial() {
                 if (Timing) {
                     ofs << "        ";
                 } else {
-                    ofs << "    #" << i * 10 + 10 << " ";
+                    ofs << "    #10 ";
                 }
                 ofs << "PE" << iter->first << "_Configure_Inport <={1'b1,32'd" << iter->second[i]
                     << "};" << endl;
@@ -314,7 +314,7 @@ void process::tempLsProcess(XMLElement* PeXml, PEPROCESS* pe) {
 
 string process::lscfggen(XMLElement* PeXml, PEPROCESS* pe) {
     // TODO:加入bus后需要更改inport0_valid的输出值，现在默认为1'b0;
-    string inport0_valid = "1'b1";
+    string inport0_valid = "1'b0";
     string reser         = "1'b1,7'b000_0000";
 
     string alu = PEALUMAP["nop"];
