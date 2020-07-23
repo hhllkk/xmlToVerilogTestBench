@@ -27,12 +27,12 @@ module PE_tb();
 //pe0例化
 PE_top  pe0_top(
     .clk(clk),
-    .reset(reset),
+    .reset(rst),
     .PE_Inport0(PE1_Outport0),
     .PE_Inport1(PE0_Inport1),
     .PE_Inport2(36'b0),
     .PE_Bus_Port0(4'b0),
-    .Post_PE_Bp0(Pre_PE1_BP0),
+    .Post_PE_Bp0(Pre_PE1_Bp0),
     .Post_PE_Bp1(1'b1),
     .Post_PE_Bp2(1'b1),
     .Post_PE_Bp3(1'b1),
@@ -45,18 +45,18 @@ PE_top  pe0_top(
     .Pre_PE_Bp0(Pre_PE0_Bp0),
     .Pre_PE_Bp1(Pre_PE0_Bp1),
     .Pre_PE_Bp2(Pre_PE0_Bp2)
-)
+);
 //end pe0 例化
     
 //pe1例化
 PE_top  pe1_top(
     .clk(clk),
-    .reset(reset),
+    .reset(rst),
     .PE_Inport0(PE0_Outport0),
     .PE_Inport1(36'b0),
     .PE_Inport2(36'b0),
     .PE_Bus_Port0(4'b0),
-    .Post_PE_Bp0(Pre_PE0_BP0),
+    .Post_PE_Bp0(Pre_PE0_Bp0),
     .Post_PE_Bp1(1'b1),
     .Post_PE_Bp2(1'b1),
     .Post_PE_Bp3(1'b1),
@@ -69,7 +69,7 @@ PE_top  pe1_top(
     .Pre_PE_Bp0(Pre_PE1_Bp0),
     .Pre_PE_Bp1(Pre_PE1_Bp1),
     .Pre_PE_Bp2(Pre_PE1_Bp2)
-)
+);
 //end pe1 例化
     
   initial begin

@@ -43,7 +43,7 @@ void PEPROCESS::peInstantiateCout(){
     ofs<<"//pe"<<_index<<"例化"<<endl;
     ofs<<"PE_top"<<"  "<<"pe"<<_index<<"_top"<<"("<<endl;
     ofs<<"    .clk(clk),"<<endl;
-    ofs<<"    .reset(reset),"<<endl;
+    ofs<<"    .reset(rst),"<<endl;
     
     for (int i = 0; i < 3; ++i)
     {
@@ -66,7 +66,7 @@ void PEPROCESS::peInstantiateCout(){
         {
             ofs<<"    .Post_PE_Bp"<<i<<"(1'b1),"<<endl;
         }else{
-            ofs<<"    .Post_PE_Bp"<<i<<"(Pre_PE"<<_bpFrom[i].peIndex<<"_BP"<<_bpFrom[i].pePort<<"),"<<endl;
+            ofs<<"    .Post_PE_Bp"<<i<<"(Pre_PE"<<_bpFrom[i].peIndex<<"_Bp"<<_bpFrom[i].pePort<<"),"<<endl;
         }
         
     }
@@ -77,7 +77,7 @@ void PEPROCESS::peInstantiateCout(){
     ofs<<"    .Pre_PE_Bp0(Pre_PE"<<_index<<"_Bp0),"<<endl;
     ofs<<"    .Pre_PE_Bp1(Pre_PE"<<_index<<"_Bp1),"<<endl;
     ofs<<"    .Pre_PE_Bp2(Pre_PE"<<_index<<"_Bp2)"<<endl;
-    ofs<<")"<<endl;
+    ofs<<");"<<endl;
     ofs<<"//end pe"<<_index<<" 例化"<<endl;
     ofs<<"    "<<endl;  
     ofs.close();
