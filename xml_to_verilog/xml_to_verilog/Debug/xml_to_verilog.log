@@ -1,4 +1,6 @@
-﻿  peprocess.cpp
+﻿  main.cpp
+E:\my_project\xml_to_v\src\process.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  peprocess.cpp
   process.cpp
 E:\my_project\xml_to_v\src\process.cpp(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 E:\my_project\xml_to_v\src\process.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
@@ -6,12 +8,12 @@ E:\my_project\xml_to_v\src\map_define.h(1,1): warning C4819: 该文件包含不�
 E:\my_project\xml_to_v\src\process.cpp(49,23): warning C4018: “<”: 有符号/无符号不匹配
 E:\my_project\xml_to_v\src\process.cpp(55,23): warning C4018: “<”: 有符号/无符号不匹配
 E:\my_project\xml_to_v\src\process.cpp(67,23): warning C4018: “<”: 有符号/无符号不匹配
-E:\my_project\xml_to_v\src\process.cpp(102,23): warning C4018: “<”: 有符号/无符号不匹配
-E:\my_project\xml_to_v\src\process.cpp(106,23): warning C4018: “<”: 有符号/无符号不匹配
-E:\my_project\xml_to_v\src\process.cpp(121,23): warning C4018: “<”: 有符号/无符号不匹配
-E:\my_project\xml_to_v\src\process.cpp(208,23): warning C4018: “<”: 有符号/无符号不匹配
-E:\my_project\xml_to_v\src\process.cpp(213,23): warning C4018: “<”: 有符号/无符号不匹配
-E:\my_project\xml_to_v\src\process.cpp(215,27): warning C4018: “<”: 有符号/无符号不匹配
-E:\my_project\xml_to_v\src\process.cpp(355,19): warning C4018: “<”: 有符号/无符号不匹配
+E:\my_project\xml_to_v\src\process.cpp(104,23): warning C4018: “<”: 有符号/无符号不匹配
+E:\my_project\xml_to_v\src\process.cpp(108,23): warning C4018: “<”: 有符号/无符号不匹配
+E:\my_project\xml_to_v\src\process.cpp(123,23): warning C4018: “<”: 有符号/无符号不匹配
+E:\my_project\xml_to_v\src\process.cpp(210,23): warning C4018: “<”: 有符号/无符号不匹配
+E:\my_project\xml_to_v\src\process.cpp(215,23): warning C4018: “<”: 有符号/无符号不匹配
+E:\my_project\xml_to_v\src\process.cpp(217,27): warning C4018: “<”: 有符号/无符号不匹配
+E:\my_project\xml_to_v\src\process.cpp(357,19): warning C4018: “<”: 有符号/无符号不匹配
   正在生成代码...
   xml_to_verilog.vcxproj -> E:\my_project\xml_to_v\xml_to_verilog\Debug\xml_to_verilog.exe

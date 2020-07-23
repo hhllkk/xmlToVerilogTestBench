@@ -90,6 +90,8 @@ void process::dfgCout() {
     ofs << "endmodule" << endl;
     ofs.close();
     std::cout << "testbench has been done!" << std::endl;
+    std::cout << "the output is:" << std::endl;
+    std::cout << OUTPUTADDR << std::endl;
 }
 
 void process::peOutMostLoop(){

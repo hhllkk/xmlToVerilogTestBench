@@ -1,3 +1,3 @@
 #pragma once
 
-#define OUTPUTADDR "E:\\my_project\\xml_to_v\\output\\two_pe.v"
+#define OUTPUTADDR "..\\..\\output\\two_pe.v"
