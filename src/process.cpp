@@ -193,6 +193,8 @@ string process::pecfggen(XMLElement* PeXml, PEPROCESS* pe) {
         }
         reg_xml = reg_xml->NextSiblingElement("reg");
     }
+    //标识reg初始胡已经结束，直接输入PE0_Configure_Inport <= <=33'd0;
+    _regValue[pe->_index].push_back(INT_MAX);
 
     //------------------------------------------------------------------------------------------//
     string alu = PEALUMAP[PeXml->FindAttribute("opcode")->Value()];
@@ -290,8 +292,12 @@ void process::peRegInitial() {
                 } else {
                     ofs << "    #10 ";
                 }
-                ofs << "PE" << iter->first << "_Configure_Inport <={1'b1,32'd" << iter->second[i]
-                    << "};" << endl;
+                if (iter->second[i] == INT_MAX) {
+                    ofs << "PE" << iter->first << "_Configure_Inport <=33'd0;" << endl;
+                } else {
+                    ofs << "PE" << iter->first << "_Configure_Inport <={1'b1,32'd"
+                        << iter->second[i] << "};" << endl;
+                };
                 Timing = true;
             }
         }

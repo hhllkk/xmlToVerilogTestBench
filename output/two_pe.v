@@ -75,6 +75,8 @@ PE_top  pe1_top(
     #10 PE0_Configure_Inport <={1'b1,32'd0};
         PE1_Configure_Inport <={1'b1,32'd2};
     #10 PE0_Configure_Inport <={1'b1,32'd5};
+        PE1_Configure_Inport <=33'd0;
+    #10 PE0_Configure_Inport <=33'd0;
   end
   always #(CYCLE/2) clk=~clk;
 endmodule
