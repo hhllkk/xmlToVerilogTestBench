@@ -76,14 +76,15 @@ PE_top  pe1_top(
     rst <=1'b1;
     clk <=1'b0;
     PE0_Configure_Inport <={1'b1,7'b000_0000,3'b101,1'b1,5'd5,3'b101,4'b0110,2'b01,1'd0,4'd2,2'd0};
-    PE1_Configure_Inport <={1'b1,7'b000_0000,3'b010,1'b1,5'd3,3'b010,4'b1001,2'b11,1'd0,4'd0,2'd0};
+    PE1_Configure_Inport <={1'b1,7'b000_0000,3'b000,1'b1,5'd3,3'b010,4'b1001,2'b11,1'd0,4'd0,2'd0};
     #2 rst <= ~rst;
     #1 rst <= ~rst;
+    
     #10 PE0_Configure_Inport <={1'b1,32'd0};
-        PE1_Configure_Inport <={1'b1,32'd2};
-    #10 PE0_Configure_Inport <={1'b1,32'd5};
         PE1_Configure_Inport <=33'd0;
+    #10 PE0_Configure_Inport <={1'b1,32'd5};
     #10 PE0_Configure_Inport <=33'd0;
+
     #10 PE0_Inport1 <= {4'b1100,32'd0};
     #10 PE0_Inport1 <= {4'b0000,32'd0};
   end
@@ -93,10 +94,10 @@ PE_top  pe1_top(
             @(posedge clk);
             #1
             if(PE0_Outport0[35:33]!=3'b000&&PE0_Outport0[32]!=1'b1) begin
-                $fwrite(filez,"PE0.vbl=%b,value=%d@clk %d\n",PE0_Outport0[35:33],PE0_Outport0[31:0],i);
+                $fwrite(filez,"PE0.vbl = %b,value = %d@clk %d\n",PE0_Outport0[35:33],PE0_Outport0[31:0],i);
             end
             if(PE1_Outport0[35:33]!=3'b000&&PE1_Outport0[32]!=1'b1) begin
-                $fwrite(filez,"PE1.vbl=%b,value=%d@clk %d is_all_comb\n",PE1_Outport0[35:33],PE1_Outport0[31:0],i);
+                $fwrite(filez,"PE1.vbl = %b,value = %d@clk %d is_all_comb\n",PE1_Outport0[35:33],PE1_Outport0[31:0],i);
             end
         end
         #1 $fclose(filez);

@@ -7,17 +7,10 @@
 PEPROCESS::PEPROCESS() {
     _index     = 0;
     _config    = "{}";
-//     _inport[2] = 0;
-//    _bpFrom[4] = {28, 2};
+
     _fanOut    = 0;
 };
-/*PEPROCESS::PEPROCESS(int index, string config, int* inport, PEBPPORT bpFrom, int fanOut) {
-    _index     = index;
-    _config    = config;
-    _inport[3] = inport;
-    _bpFrom[8] = bpFrom;
-    _fanOut    = fanOut;
-};*/
+
 PEPROCESS::~PEPROCESS(){};
 void PEPROCESS::pePortCout(){
     ofstream ofs;
@@ -33,7 +26,7 @@ void PEPROCESS::pePortCout(){
     ofs<<"  wire Pre_PE"<<_index<<"_Bp1;"<<endl;
     ofs<<"  wire Pre_PE"<<_index<<"_Bp2;"<<endl;   
     ofs<<"//end pe"<<_index<<" 端口定义"<<endl;
-    ofs<<endl;     
+    ofs<<endl;
     ofs.close();
  
 }
@@ -49,7 +42,7 @@ void PEPROCESS::peInstantiateCout(){
     {
         if (_outloop&&i==1)
         {
-           ofs<<"    .PE_Inport1(PE0_Inport1),"<<endl;
+           ofs<<"    .PE_Inport1(PE"<<_index<<"_Inport1),"<<endl;
         }else if (_inport[i]==-1)
         {
             ofs<<"    .PE_Inport"<<i<<"(36'b0),"<<endl;

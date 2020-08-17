@@ -24,7 +24,7 @@
     <input type="null"/>
     <input type="null"/>
     <reg value="null" />
-    <reg value="2" />
+    <reg value="null" />
     <reg value="null" />
     <placement cord="[5, 8]"/>
   </node>

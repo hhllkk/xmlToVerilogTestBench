@@ -123,7 +123,7 @@ void process::dataCout(){
     for (int i = 0; i < _peGroup.size(); ++i)
     {
         ofs << "            if(PE"<<_peGroup[i]._index<<"_Outport0[35:33]!=3'b000&&PE"<<_peGroup[i]._index<<"_Outport0[32]!=1'b1) begin" << endl;
-        ofs << "                $fwrite(filez,\"PE"<<_peGroup[i]._index<<".vbl=%b,value=%d";
+        ofs << "                $fwrite(filez,\"PE"<<_peGroup[i]._index<<".vbl = %b,value = %d";
         //判断inbuffer与outbuffer是不是全部bypass，53与54位是buffer_bypass的配置，如果全部bypass，则需要加注释
         if (_peGroup[i]._config[53]=='1'&&_peGroup[i]._config[54]=='1')
         {
@@ -253,7 +253,7 @@ string process::pecfggen(XMLElement* PeXml, PEPROCESS* pe) {
         }
         reg_xml = reg_xml->NextSiblingElement("reg");
     }
-    //标识reg初始胡已经结束，直接输入PE0_Configure_Inport <= <=33'd0;
+    //标识reg初始已经结束，直接输出PE0_Configure_Inport <= <=33'd0;
     _regValue[pe->_index].push_back(INT_MAX);
 
     //------------------------------------------------------------------------------------------//
@@ -393,6 +393,8 @@ string process::lscfggen(XMLElement* PeXml, PEPROCESS* pe) {
 
     string alu = PEALUMAP["nop"];
 
+    _regValue[pe->_index].push_back(INT_MAX);
+
     /****************************************生成buf_mode****************************************/
 
     string buffer0_mode = PEBUFMODE["buffer"];
@@ -435,7 +437,6 @@ string process::lscfggen(XMLElement* PeXml, PEPROCESS* pe) {
 
 
     /****************************************生成outmode*****************************************/
-    // TODO:加入output_mode==bus时的配置，在xml中没找到对应的关键字配置，先默认为pe
     string outmode = "1'd1";
     //------------------------------------------------------------------------------------------//
 

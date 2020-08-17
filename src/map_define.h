@@ -16,7 +16,7 @@ std::unordered_map<std::string, std::string> PEALUMAP = {
     /**
      * 为支持之前的配置字
      */
-    {"lt", "5'd5"},{"eq", "5'd5"}
+    {"lt", "5'd5"},{"eq", "5'd7"},{"hlt", "5'd5"},
 };
 std::unordered_map<std::string, std::string> PEBUF02CFGMAP = {
     {"buffer", "0"}, {"keep", "1"}, {"null", "0"}, {"in0", "1"}, {"in2", "1"}};

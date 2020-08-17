@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Config manual_placement="true">
+    <node type="pe" index="1" opcode="hlt" loop_control="outermost_loop" branch_control="null">
+        <inner_connection
+			buffer0_mode="keep" buffer1_mode="buffer" buffer2_mode="keep"
+			buffer0_from="null" buffer1_from="aluin1" buffer2_from="null"
+			input_buffer_bypass="inbuffer" output_buffer_bypass="bypass"/>
+        <input type="null"/>
+        <input type="null"/>
+        <input type="null"/>
+        <reg value="0" />
+        <reg value="null" />
+        <reg value="100" />
+        <placement cord="[5, 5]"/>
+    </node>
+    <node type="pe" index="2" opcode="add" loop_control="null" branch_control="null">
+        <inner_connection
+            buffer0_mode="buffer" buffer1_mode="keep" buffer2_mode="buffer"
+			buffer0_from="in0" buffer1_from="null" buffer2_from="null"
+            input_buffer_bypass="inbuffer" output_buffer_bypass="outbuffer"/>
+        <input type="pe" index="1" port="0"/>
+        <input type="null"/>
+        <input type="null"/>
+        <reg value="null" />
+        <reg value="1" />
+        <reg value="null" />
+        <placement cord="[5, 4]"/>
+    </node>
+    <node type="bus" index="0" level="0" end_table="pe.2.0">
+        <placement cord="[2, 9]"/>
+    </node>
+</Config>
+<!-- for(int i=0;i<100;i++)
+        j=i+1; -->

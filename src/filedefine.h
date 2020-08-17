@@ -1,3 +1,3 @@
 #pragma once
 
-#define OUTPUTADDR "..\\..\\output\\two_pe.v"
+#define OUTPUTADDR "..\\..\\output\\RTLtest.v"

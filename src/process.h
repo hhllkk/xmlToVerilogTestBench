@@ -63,5 +63,6 @@ class process {
     unordered_map<int, vector<bpItc>> _peBPItc;
     //index + regvalue
     unordered_map<int, vector<int>> _regValue;
+    //保存作为out_loop的编号
     std::vector<int> _outLoopNum;
 };

@@ -5,7 +5,7 @@
 using namespace tinyxml2;
 int main() {
 
-	process a=process("..\\..\\input\\two_pe.xml");
+	process a=process("..\\..\\input\\RTLtest.xml");
 
 	return 0;
 }
